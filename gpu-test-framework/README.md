@@ -38,7 +38,7 @@ A comprehensive, reusable GPU testing framework for Java projects with automatic
 First, run the platform validation test to ensure your environment is properly configured:
 
 ```bash
-mvn test -Dtest=HeadlessPlatformValidationTest
+./mvnw test -Dtest=HeadlessPlatformValidationTest
 ```
 
 Expected output on macOS M4:
@@ -195,7 +195,7 @@ void testWithGracefulFallback() {
 
 ```yaml
 - name: Run GPU Tests
-  run: mvn test -Dtest="*GPUTest" 
+  run: ./mvnw test -Dtest="*GPUTest" 
   env:
     JAVA_TOOL_OPTIONS: -Djava.awt.headless=true
 ```
@@ -230,7 +230,7 @@ Enable debug logging for detailed GPU discovery information:
 If tests fail, first run the platform validation:
 
 ```bash
-mvn test -Dtest=HeadlessPlatformValidationTest
+./mvnw test -Dtest=HeadlessPlatformValidationTest
 ```
 
 This will provide detailed information about what's working and what isn't.

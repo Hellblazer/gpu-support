@@ -208,13 +208,13 @@ The module includes comprehensive tests:
 
 ```bash
 # Run all tests
-mvn test -pl resource
+./mvnw test -pl resource
 
 # Run specific test
-mvn test -pl resource -Dtest=UnifiedResourceManagerTest
+./mvnw test -pl resource -Dtest=UnifiedResourceManagerTest
 
 # Run benchmarks
-mvn test -pl resource -Dtest=ResourceBenchmark
+./mvnw test -pl resource -Dtest=ResourceBenchmark
 ```
 
 ## Integration with Luciferase

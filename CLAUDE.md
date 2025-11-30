@@ -19,36 +19,36 @@ Multi-module Maven project with two main modules:
 
 ### Basic Operations
 ```bash
-mvn clean install              # Full build
-mvn clean compile              # Compile only
-mvn test                       # Run all tests
-mvn verify                     # Run integration tests
+./mvnw clean install              # Full build
+./mvnw clean compile              # Compile only
+./mvnw test                       # Run all tests
+./mvnw verify                     # Run integration tests
 ```
 
 ### Module-Specific
 ```bash
-mvn test -pl resource                    # Test resource module
-mvn test -pl gpu-test-framework         # Test GPU framework
+./mvnw test -pl resource                    # Test resource module
+./mvnw test -pl gpu-test-framework         # Test GPU framework
 ```
 
 ### GPU-Specific Testing
 ```bash
-# Platform validation (run first!)
-mvn test -Dtest=HeadlessPlatformValidationTest
+# Platform validation (run first)
+./mvnw test -Dtest=HeadlessPlatformValidationTest
 
 # GPU-specific tests
-mvn test -Pgpu-tests
+./mvnw test -Pgpu-tests
 
 # Performance benchmarks
-mvn test -Pgpu-benchmark
+./mvnw test -Pgpu-benchmark
 
 # Single test with GPU access (requires disabling sandbox)
-mvn test -Dtest=ClassName#methodName
+./mvnw test -Dtest=ClassName#methodName
 ```
 
 ### Parallel Testing
 ```bash
-mvn test -Pparallel-tests      # Resource module: 2-3x faster
+./mvnw test -Pparallel-tests      # Resource module: 2-3x faster
 ```
 
 ## GPU Testing Requirements
