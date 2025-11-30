@@ -43,9 +43,18 @@ Built on LWJGL 3.3.6, targeting Java 25, and designed for cross-platform GPU com
 
 ### Installation
 
-Add to your Maven project:
+#### From GitHub Packages
+
+Add the GitHub Packages repository and dependencies to your Maven project:
 
 ```xml
+<repositories>
+    <repository>
+        <id>github</id>
+        <url>https://maven.pkg.github.com/Hellblazer/gpu-support</url>
+    </repository>
+</repositories>
+
 <dependencies>
     <!-- Resource Management -->
     <dependency>
@@ -63,6 +72,22 @@ Add to your Maven project:
     </dependency>
 </dependencies>
 ```
+
+**Authentication:** Configure your `~/.m2/settings.xml` with a GitHub Personal Access Token:
+
+```xml
+<settings>
+    <servers>
+        <server>
+            <id>github</id>
+            <username>YOUR_GITHUB_USERNAME</username>
+            <password>YOUR_GITHUB_TOKEN</password>
+        </server>
+    </servers>
+</settings>
+```
+
+Generate a token at [GitHub Settings → Developer settings → Personal access tokens](https://github.com/settings/tokens) with `read:packages` scope.
 
 ### Build from Source
 
