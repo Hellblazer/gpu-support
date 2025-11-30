@@ -53,7 +53,7 @@ mvn test -Pparallel-tests      # Resource module: 2-3x faster
 
 ## GPU Testing Requirements
 
-**CRITICAL:** GPU/OpenCL tests require `dangerouslyDisableSandbox: true` when using Bash tool because the sandbox blocks GPU/device access in background processes.
+GPU/OpenCL tests require `dangerouslyDisableSandbox: true` when using Bash tool because the sandbox blocks GPU/device access in background processes.
 
 Example:
 ```java
