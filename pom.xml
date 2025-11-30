@@ -6,7 +6,7 @@
 
     <groupId>com.hellblazer.gpu-support</groupId>
     <artifactId>gpu-support.app</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.2</version>
     <packaging>pom</packaging>
 
     <properties>

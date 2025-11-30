@@ -9,7 +9,7 @@
     <parent>
         <groupId>com.hellblazer.gpu-support</groupId>
         <artifactId>gpu-support.app</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.2</version>
     </parent>
     
     <artifactId>gpu-test-framework</artifactId>
