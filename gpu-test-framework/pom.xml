@@ -204,17 +204,12 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <systemPropertyVariables>
-                        <java.awt.headless>true</java.awt.headless>
-                        <lwjgl.opencl.explicitInit>true</lwjgl.opencl.explicitInit>
-                    </systemPropertyVariables>
                     <includes>
                         <include>**/*Test.java</include>
                         <include>**/*Tests.java</include>
                     </includes>
                     <!-- <groups>framework</groups> Run framework tests by default -->
-                    <!-- Use parent configuration for JVM arguments and add GPU-specific settings -->
-                    <argLine>-Xmx512m -Xms256m --add-modules jdk.incubator.vector -Djava.awt.headless=true</argLine>
+                    <argLine>--enable-native-access=ALL-UNNAMED -Xmx512m -Xms256m --add-modules jdk.incubator.vector -Djava.awt.headless=true -Dlwjgl.opencl.explicitInit=true -Dorg.lwjgl.util.DebugLoader=false</argLine>
                 </configuration>
             </plugin>
             
@@ -224,15 +219,11 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>3.0.0-M9</version>
                 <configuration>
-                    <systemPropertyVariables>
-                        <java.awt.headless>true</java.awt.headless>
-                        <lwjgl.opencl.explicitInit>true</lwjgl.opencl.explicitInit>
-                    </systemPropertyVariables>
                     <includes>
                         <include>**/*IT.java</include>
                         <include>**/*IntegrationTest.java</include>
                     </includes>
-                    <argLine>-Xmx512m -Xms256m --add-modules jdk.incubator.vector -Djava.awt.headless=true</argLine>
+                    <argLine>--enable-native-access=ALL-UNNAMED -Xmx512m -Xms256m --add-modules jdk.incubator.vector -Djava.awt.headless=true -Dlwjgl.opencl.explicitInit=true -Dorg.lwjgl.util.DebugLoader=false</argLine>
                 </configuration>
                 <executions>
                     <execution>

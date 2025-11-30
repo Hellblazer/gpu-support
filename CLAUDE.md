@@ -64,6 +64,45 @@ void testOpenCLKernel() {
 }
 ```
 
+## JVM Requirements & Known Warnings
+
+### Required JVM Arguments (Already Configured)
+
+The build automatically configures these JVM arguments for all tests:
+
+- `--enable-native-access=ALL-UNNAMED` - Required for LWJGL native library loading (Java 21+)
+- `--add-modules jdk.incubator.vector` - Enables Vector API for SIMD operations
+- `--add-opens java.base/java.lang=ALL-UNNAMED` - Required for LWJGL reflection
+- `--add-opens java.base/java.nio=ALL-UNNAMED` - Required for LWJGL ByteBuffer operations
+
+### Expected Warnings in Logs
+
+**LWJGL Unsafe API Deprecation** (Upstream Issue - Safe to Ignore):
+```
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.lwjgl.system.MemoryUtil
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+```
+- **Root Cause:** LWJGL 3.3.6 uses deprecated Unsafe APIs for performance
+- **Impact:** LWJGL dependency issue, not under our control
+- **Status:** Tracked by LWJGL maintainers, will be fixed in future LWJGL release
+- **Action:** None required - functionality works correctly
+
+**Incubator Module Usage** (Expected):
+```
+WARNING: Using incubator modules: jdk.incubator.vector
+```
+- **Root Cause:** Vector API is still incubating in Java 25
+- **Impact:** Required for SIMD operations; may stabilize in future Java versions
+- **Action:** This is intentional - Vector API provides significant performance benefits
+
+### CI/CD Environment Behavior
+
+Tests automatically skip in CI environments without GPU drivers:
+- **Resource module:** 21 OpenCL tests skip gracefully
+- **GPU Test Framework:** All GPU-dependent tests skip
+- **Mock Platform:** Automatically used in CI for testing framework logic
+- **Detection:** Uses `CICompatibleGPUTest` base class for automatic OpenCL detection
+
 ## Key Architecture Patterns
 
 ### Resource Management (RAII Pattern)

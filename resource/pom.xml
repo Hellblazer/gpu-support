@@ -114,11 +114,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>-Dgpu.resource.tracking=true -Dgpu.resource.tracking.verbose=true -Djava.awt.headless=true -Dorg.lwjgl.system.allocator=system -Dorg.lwjgl.system.stackSize=128 --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED</argLine>
-                    <systemPropertyVariables>
-                        <java.awt.headless>true</java.awt.headless>
-                        <org.lwjgl.system.allocator>system</org.lwjgl.system.allocator>
-                    </systemPropertyVariables>
+                    <argLine>--enable-native-access=ALL-UNNAMED -Dgpu.resource.tracking=true -Dgpu.resource.tracking.verbose=true -Djava.awt.headless=true -Dorg.lwjgl.system.allocator=system -Dorg.lwjgl.system.stackSize=128 -Dorg.lwjgl.util.DebugLoader=false --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED</argLine>
                 </configuration>
             </plugin>
         </plugins>
@@ -134,11 +130,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <argLine>-Dgpu.resource.tracking=true -Dgpu.resource.tracking.verbose=true -Djava.awt.headless=true -Dorg.lwjgl.system.allocator=system -Dorg.lwjgl.system.stackSize=128 --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED</argLine>
-                            <systemPropertyVariables>
-                                <java.awt.headless>true</java.awt.headless>
-                                <org.lwjgl.system.allocator>system</org.lwjgl.system.allocator>
-                            </systemPropertyVariables>
+                            <argLine>--enable-native-access=ALL-UNNAMED -Dgpu.resource.tracking=true -Dgpu.resource.tracking.verbose=true -Djava.awt.headless=true -Dorg.lwjgl.system.allocator=system -Dorg.lwjgl.system.stackSize=128 -Dorg.lwjgl.util.DebugLoader=false --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED</argLine>
                             <!-- Parallel execution: classes run in parallel threads -->
                             <parallel>classes</parallel>
                             <threadCount>4</threadCount>
