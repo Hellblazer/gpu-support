@@ -69,7 +69,7 @@ jobs:
 
       - name: Push changes and tags
         run: |
-          git push origin HEAD:master
+          git push origin HEAD:main
           git push origin v${{ github.event.inputs.releaseVersion }}
 
       - name: Create GitHub Release
