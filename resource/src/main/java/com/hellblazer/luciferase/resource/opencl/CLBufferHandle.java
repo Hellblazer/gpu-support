@@ -28,9 +28,6 @@ public class CLBufferHandle extends ResourceHandle<Long> {
     // Global statistics (shared across all instances)
     private static final CLBufferStatistics GLOBAL_STATISTICS = new CLBufferStatistics();
 
-    // Large buffer threshold (100MB)
-    private static final long LARGE_BUFFER_THRESHOLD = 100L * 1024 * 1024;
-
     private final long context;
     private final long size;
     private final int flags;
@@ -146,9 +143,9 @@ public class CLBufferHandle extends ResourceHandle<Long> {
             GLOBAL_STATISTICS.recordAllocation();
 
             // Warn if large buffer without pool callback
-            if (size > LARGE_BUFFER_THRESHOLD && onRelease == null) {
-                log.warn("Large buffer ({} MB) allocated without pool callback - consider using memory pooling",
-                        size / (1024.0 * 1024.0));
+            if (com.hellblazer.luciferase.resource.memory.BufferPoolUtils.isLargeBuffer(size) && onRelease == null) {
+                log.warn("Large buffer ({}) allocated without pool callback - consider using memory pooling",
+                        com.hellblazer.luciferase.resource.memory.BufferPoolUtils.formatBytes(size));
             }
 
             // Enhanced logging to track buffer allocation with stack trace for debugging

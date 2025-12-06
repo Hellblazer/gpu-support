@@ -12,6 +12,7 @@ import org.lwjgl.system.MemoryUtil;
 import java.nio.IntBuffer;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.*;
 import static org.lwjgl.opencl.CL10.*;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
@@ -53,15 +54,20 @@ class PinnedMemoryTest {
             platform = platformBuffer.get(0);
 
             IntBuffer numDevices = stack.mallocInt(1);
-            clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, null, numDevices);
+            long deviceType = CL_DEVICE_TYPE_GPU;
+            clGetDeviceIDs(platform, deviceType, null, numDevices);
 
             if (numDevices.get(0) == 0) {
                 // Fallback to CPU if GPU not available
-                clGetDeviceIDs(platform, CL_DEVICE_TYPE_CPU, null, numDevices);
+                deviceType = CL_DEVICE_TYPE_CPU;
+                clGetDeviceIDs(platform, deviceType, null, numDevices);
             }
 
+            // Skip test if no OpenCL devices available
+            assumeTrue(numDevices.get(0) > 0, "No OpenCL devices (GPU or CPU) available - skipping test");
+
             var deviceBuffer = stack.mallocPointer(numDevices.get(0));
-            clGetDeviceIDs(platform, CL_DEVICE_TYPE_ALL, deviceBuffer, (IntBuffer) null);
+            clGetDeviceIDs(platform, deviceType, deviceBuffer, (IntBuffer) null);
             device = deviceBuffer.get(0);
 
             IntBuffer errcode = stack.mallocInt(1);

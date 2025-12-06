@@ -5,7 +5,7 @@ A comprehensive, reusable GPU testing framework for Java projects with automatic
 ## Features
 
 - **Multi-Backend Support**: OpenCL, OpenGL Compute, Metal 3 (via bgfx)
-- **Headless Operation**: Runs without display or windowing systems, suitable for CI/CD
+- **Headless Operation**: Runs without display or windowing systems - perfect for CI/CD
 - **CI/CD Compatible**: Automatic mock fallback in CI environments
 - **Performance Benchmarking**: Built-in CPU vs GPU comparison with JMH
 - **Memory Analysis**: Transfer overhead profiling and optimization guidance
@@ -38,7 +38,7 @@ A comprehensive, reusable GPU testing framework for Java projects with automatic
 First, run the platform validation test to ensure your environment is properly configured:
 
 ```bash
-./mvnw test -Dtest=HeadlessPlatformValidationTest
+mvn test -Dtest=HeadlessPlatformValidationTest
 ```
 
 Expected output on macOS M4:
@@ -46,7 +46,7 @@ Expected output on macOS M4:
 === LWJGL Headless Platform Validation ===
 Platform: macOS (MACOSX)
 Architecture: ARM64 (64-bit: true)
-Headless platform validation PASSED - Framework safe to use.
+✅ Headless platform validation PASSED - Framework safe to use!
 ```
 
 ### 2. Basic Usage
@@ -195,7 +195,7 @@ void testWithGracefulFallback() {
 
 ```yaml
 - name: Run GPU Tests
-  run: ./mvnw test -Dtest="*GPUTest" 
+  run: mvn test -Dtest="*GPUTest" 
   env:
     JAVA_TOOL_OPTIONS: -Djava.awt.headless=true
 ```
@@ -230,7 +230,7 @@ Enable debug logging for detailed GPU discovery information:
 If tests fail, first run the platform validation:
 
 ```bash
-./mvnw test -Dtest=HeadlessPlatformValidationTest
+mvn test -Dtest=HeadlessPlatformValidationTest
 ```
 
 This will provide detailed information about what's working and what isn't.
@@ -244,7 +244,7 @@ Successful GPU discovery and testing:
 [INFO] Found 1 device(s) on platform Apple:
 [INFO]   Apple M4 [GPU] - 10 CUs, 21474.8 MB mem
 [INFO] Testing GPU vector addition on: Apple M4 [GPU] - 10 CUs, 21474.8 MB mem
-[INFO] GPU vector addition test PASSED - 1024 elements processed
+[INFO] ✅ GPU vector addition test PASSED - 1024 elements processed
 ```
 
 ## Documentation

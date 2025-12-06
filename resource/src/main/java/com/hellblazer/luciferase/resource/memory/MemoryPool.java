@@ -99,12 +99,14 @@ public class MemoryPool implements AutoCloseable {
     
     /**
      * Buffer size categories for GPU-specific eviction policies.
+     * @deprecated Use {@link BufferPoolUtils.BufferCategory} instead
      */
+    @Deprecated(since = "1.0", forRemoval = true)
     public enum BufferCategory {
-        SMALL(0, 64 * 1024),           // 0-64KB: Fast to reallocate
-        MEDIUM(64 * 1024, 10 * 1024 * 1024),  // 64KB-10MB: Moderate cost
-        XLARGE(10 * 1024 * 1024, 100 * 1024 * 1024),  // 10MB-100MB: Slow to reallocate
-        BATCH(100 * 1024 * 1024, Integer.MAX_VALUE);  // 100MB+: Very slow (GPU batch operations)
+        SMALL(0, 64 * 1024),
+        MEDIUM(64 * 1024, 10 * 1024 * 1024),
+        XLARGE(10 * 1024 * 1024, 100 * 1024 * 1024),
+        BATCH(100 * 1024 * 1024, Integer.MAX_VALUE);
 
         private final int minSize;
         private final int maxSize;
@@ -114,22 +116,16 @@ public class MemoryPool implements AutoCloseable {
             this.maxSize = maxSize;
         }
 
-        public int getMinSize() {
-            return minSize;
-        }
+        public int getMinSize() { return minSize; }
+        public int getMaxSize() { return maxSize; }
 
-        public int getMaxSize() {
-            return maxSize;
-        }
-
-        /**
-         * Determine category for a given buffer size.
-         */
         public static BufferCategory fromSize(int size) {
-            if (size < MEDIUM.minSize) return SMALL;
-            if (size < XLARGE.minSize) return MEDIUM;
-            if (size < BATCH.minSize) return XLARGE;
-            return BATCH;
+            return switch (BufferPoolUtils.BufferCategory.fromSize(size)) {
+                case SMALL -> SMALL;
+                case MEDIUM -> MEDIUM;
+                case XLARGE -> XLARGE;
+                case BATCH -> BATCH;
+            };
         }
     }
 
@@ -644,9 +640,11 @@ public class MemoryPool implements AutoCloseable {
     
     /**
      * Round up to nearest power of 2.
+     * @deprecated Use {@link BufferPoolUtils#roundUpToPowerOf2(int)} instead
      */
+    @Deprecated(since = "1.0", forRemoval = true)
     private static int roundUpToPowerOf2(int value) {
-        return 1 << (32 - Integer.numberOfLeadingZeros(value - 1));
+        return BufferPoolUtils.roundUpToPowerOf2(value);
     }
     
     /**
@@ -930,12 +928,11 @@ public class MemoryPool implements AutoCloseable {
     
     /**
      * Format bytes for display.
+     * @deprecated Use {@link BufferPoolUtils#formatBytes(long)} instead
      */
+    @Deprecated(since = "1.0", forRemoval = true)
     private static String formatBytes(long bytes) {
-        if (bytes < 1024) return bytes + " B";
-        if (bytes < 1024 * 1024) return String.format("%.1f KB", bytes / 1024.0);
-        if (bytes < 1024 * 1024 * 1024) return String.format("%.1f MB", bytes / (1024.0 * 1024));
-        return String.format("%.1f GB", bytes / (1024.0 * 1024 * 1024));
+        return BufferPoolUtils.formatBytes(bytes);
     }
     
     /**

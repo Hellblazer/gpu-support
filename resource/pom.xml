@@ -54,7 +54,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <scope>test</scope>
+            <!-- Compile scope: test utilities in src/main used by other modules -->
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -114,7 +114,21 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>--enable-native-access=ALL-UNNAMED -Dgpu.resource.tracking=true -Dgpu.resource.tracking.verbose=true -Djava.awt.headless=true -Dorg.lwjgl.system.allocator=system -Dorg.lwjgl.system.stackSize=128 -Dorg.lwjgl.util.DebugLoader=false --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED</argLine>
+                    <argLine>
+                        @{argLine}
+                        --enable-preview
+                        -Dgpu.resource.tracking=true
+                        -Dgpu.resource.tracking.verbose=true
+                        -Djava.awt.headless=true
+                        -Dorg.lwjgl.system.allocator=system
+                        -Dorg.lwjgl.system.stackSize=128
+                        --add-opens java.base/java.lang=ALL-UNNAMED
+                        --add-opens java.base/java.nio=ALL-UNNAMED
+                    </argLine>
+                    <systemPropertyVariables>
+                        <java.awt.headless>true</java.awt.headless>
+                        <org.lwjgl.system.allocator>system</org.lwjgl.system.allocator>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>
@@ -130,7 +144,21 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <argLine>--enable-native-access=ALL-UNNAMED -Dgpu.resource.tracking=true -Dgpu.resource.tracking.verbose=true -Djava.awt.headless=true -Dorg.lwjgl.system.allocator=system -Dorg.lwjgl.system.stackSize=128 -Dorg.lwjgl.util.DebugLoader=false --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.nio=ALL-UNNAMED</argLine>
+                            <argLine>
+                                @{argLine}
+                                --enable-preview
+                                -Dgpu.resource.tracking=true
+                                -Dgpu.resource.tracking.verbose=true
+                                -Djava.awt.headless=true
+                                -Dorg.lwjgl.system.allocator=system
+                                -Dorg.lwjgl.system.stackSize=128
+                                --add-opens java.base/java.lang=ALL-UNNAMED
+                                --add-opens java.base/java.nio=ALL-UNNAMED
+                            </argLine>
+                            <systemPropertyVariables>
+                                <java.awt.headless>true</java.awt.headless>
+                                <org.lwjgl.system.allocator>system</org.lwjgl.system.allocator>
+                            </systemPropertyVariables>
                             <!-- Parallel execution: classes run in parallel threads -->
                             <parallel>classes</parallel>
                             <threadCount>4</threadCount>
