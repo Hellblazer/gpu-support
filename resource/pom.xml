@@ -115,7 +115,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <argLine>
-                        @{argLine}
                         --enable-preview
                         -Dgpu.resource.tracking=true
                         -Dgpu.resource.tracking.verbose=true
@@ -125,10 +124,6 @@
                         --add-opens java.base/java.lang=ALL-UNNAMED
                         --add-opens java.base/java.nio=ALL-UNNAMED
                     </argLine>
-                    <systemPropertyVariables>
-                        <java.awt.headless>true</java.awt.headless>
-                        <org.lwjgl.system.allocator>system</org.lwjgl.system.allocator>
-                    </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>
@@ -145,7 +140,6 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <argLine>
-                                @{argLine}
                                 --enable-preview
                                 -Dgpu.resource.tracking=true
                                 -Dgpu.resource.tracking.verbose=true
@@ -155,10 +149,6 @@
                                 --add-opens java.base/java.lang=ALL-UNNAMED
                                 --add-opens java.base/java.nio=ALL-UNNAMED
                             </argLine>
-                            <systemPropertyVariables>
-                                <java.awt.headless>true</java.awt.headless>
-                                <org.lwjgl.system.allocator>system</org.lwjgl.system.allocator>
-                            </systemPropertyVariables>
                             <!-- Parallel execution: classes run in parallel threads -->
                             <parallel>classes</parallel>
                             <threadCount>4</threadCount>
