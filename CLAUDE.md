@@ -10,10 +10,11 @@ A GPU support framework for Java providing resource lifecycle management and com
 
 ## Project Structure
 
-Multi-module Maven project with two main modules:
+Multi-module Maven project with three main modules:
 
 - **resource**: RAII-based GPU resource lifecycle management with memory pooling
 - **gpu-test-framework**: Headless GPU testing framework with CI/CD compatibility
+- **resource-lifecycle-testing**: Portable resource leak detection and lifecycle testing framework
 
 ## Build Commands
 
@@ -27,8 +28,9 @@ Multi-module Maven project with two main modules:
 
 ### Module-Specific
 ```bash
-./mvnw test -pl resource                    # Test resource module
-./mvnw test -pl gpu-test-framework         # Test GPU framework
+./mvnw test -pl resource                        # Test resource module
+./mvnw test -pl gpu-test-framework              # Test GPU framework
+./mvnw test -pl resource-lifecycle-testing      # Test lifecycle framework
 ```
 
 ### GPU-Specific Testing
@@ -221,6 +223,33 @@ PlatformTestSupport.requirePlatform(Platform.LINUX);  // Linux-only
 PlatformTestSupport.require64Bit();                   // 64-bit only
 PlatformTestSupport.skipOnARMForStackTests();         // Skip on ARM
 ```
+
+### Resource Lifecycle Testing
+
+Use `ResourceLifecycleTestSupport` for leak detection:
+```java
+public class MyComponentTest extends ResourceLifecycleTestSupport {
+    @Test
+    void testNoResourceLeaks() {
+        var before = captureSnapshot();
+
+        try (var component = new MyComponent()) {
+            component.doWork();
+        }
+
+        var after = captureSnapshot();
+        var report = diff(before, after);
+        assertNoLeaks(report);  // Fails with detailed report if leaks detected
+    }
+}
+```
+
+Key methods:
+- `captureSnapshot()` - Capture current resource state
+- `diff(before, after)` - Compute leak report between snapshots
+- `assertNoLeaks(report)` - Fail test if any leaks detected
+- `assertLeakCount(report, count)` - Assert exact leak count
+- `assertFreedCount(report, count)` - Assert exact freed count
 
 ### Benchmarking
 

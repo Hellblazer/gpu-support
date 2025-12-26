@@ -28,6 +28,7 @@
     <modules>
         <module>resource</module>
         <module>gpu-test-framework</module>
+        <module>resource-lifecycle-testing</module>
     </modules>
 
     <distributionManagement>
@@ -48,6 +49,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>gpu-test-framework</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>resource-lifecycle-testing</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
