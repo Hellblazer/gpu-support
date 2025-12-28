@@ -117,12 +117,26 @@ public class TestSupportMatrix {
     }
     
     private void detectBackendSupport() {
-        // OpenCL detection
+        // OpenCL detection - handle already-initialized state correctly
+        // Note: We do NOT destroy CL after detection because subsequent code may need it
         try {
-            CL.create();
+            try {
+                CL.create();
+                log.debug("OpenCL initialized successfully");
+            } catch (IllegalStateException e) {
+                // "OpenCL has already been created" means it's available
+                if (e.getMessage() != null && e.getMessage().contains("already been created")) {
+                    log.debug("OpenCL already initialized - treating as available");
+                } else {
+                    throw e; // Re-throw other IllegalStateExceptions
+                }
+            }
+
+            // OpenCL is available (either we created it or it was already created)
             backendSupport.put(Backend.OPENCL, ciEnvironment ? SupportLevel.MOCK : SupportLevel.FULL);
         } catch (Throwable t) {
-            backendSupport.put(Backend.OPENCL, 
+            log.debug("OpenCL not available: {}", t.getMessage());
+            backendSupport.put(Backend.OPENCL,
                 ciEnvironment ? SupportLevel.MOCK : SupportLevel.NOT_AVAILABLE);
         }
         
