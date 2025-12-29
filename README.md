@@ -14,6 +14,34 @@ The GPU Support Framework consists of two primary modules designed for the [Luci
 
 Built on LWJGL 3.3.6, targeting Java 25, and designed for cross-platform GPU compute applications.
 
+## GPU Compute
+
+Vector operations with automatic GPU acceleration and CPU fallback:
+
+```java
+var compute = ComputeService.getInstance();
+
+// Built-in operations
+float[] sum = compute.vectorAdd(a, b);
+float[] result = compute.saxpy(2.0f, x, y);  // 2*x + y
+float[] scaled = compute.scale(data, 0.5f);
+
+// Reductions
+float total = compute.sum(data);
+float max = compute.max(data);
+
+// Custom kernels
+try (var op = compute.createOperation("multiply", source, "multiply")) {
+    op.setInput(0, a);
+    op.setInput(1, b);
+    op.setOutput(2, size);
+    op.setArg(3, size);
+    float[] product = op.execute(size);
+}
+```
+
+See [resource/COMPUTE.md](resource/COMPUTE.md) for the full usage guide.
+
 ## Key Features
 
 ### Resource Management
@@ -181,8 +209,20 @@ gpu-support/
 │   │       ├── ResourceHandle.java
 │   │       ├── MemoryPool.java
 │   │       ├── ResourceTracker.java
+│   │       ├── compute/         # GPU compute infrastructure
+│   │       │   ├── ComputeService.java      # High-level API
+│   │       │   ├── GPUBackend.java
+│   │       │   ├── BackendSelector.java
+│   │       │   ├── KernelLoader.java
+│   │       │   └── opencl/      # OpenCL implementation
+│   │       │       ├── OpenCLContext.java
+│   │       │       ├── OpenCLBuffer.java
+│   │       │       └── OpenCLKernel.java
 │   │       ├── opencl/          # OpenCL resource handles
 │   │       └── opengl/          # OpenGL resource handles
+│   ├── src/main/resources/
+│   │   └── kernels/opencl/      # Built-in OpenCL kernels
+│   ├── COMPUTE.md               # Compute usage guide
 │   └── README.md
 │
 ├── gpu-test-framework/          # GPU testing infrastructure
@@ -346,6 +386,7 @@ The framework includes:
 ## Documentation
 
 ### Primary Documentation
+- **[GPU Compute Guide](resource/COMPUTE.md)** - ComputeService API and kernel writing
 - **[Resource Module README](resource/README.md)** - Detailed resource management guide
 - **[GPU Test Framework README](gpu-test-framework/README.md)** - Testing framework overview
 - **[Usage Guide](gpu-test-framework/USAGE_GUIDE.md)** - Comprehensive usage examples
