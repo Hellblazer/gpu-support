@@ -201,10 +201,10 @@ public class SimpleMatrixMultiplyTest extends CICompatibleGPUTest {
             checkError(errcode.get(0), "clCreateKernel");
             
             // Set kernel arguments
-            CL10.clSetKernelArg(kernel, 0, memA);
-            CL10.clSetKernelArg(kernel, 1, memB);
-            CL10.clSetKernelArg(kernel, 2, memC);
-            CL10.clSetKernelArg(kernel, 3, stack.ints(N));
+            CL10.clSetKernelArg1p(kernel, 0, memA);
+            CL10.clSetKernelArg1p(kernel, 1, memB);
+            CL10.clSetKernelArg1p(kernel, 2, memC);
+            CL10.clSetKernelArg1i(kernel, 3, N);
             
             // Execute kernel
             var globalWorkSize = stack.pointers(N, N);
