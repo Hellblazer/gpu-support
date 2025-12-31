@@ -212,6 +212,63 @@ public class OpenCLKernel implements ComputeKernel {
         }
     }
 
+    /**
+     * Set a raw OpenCL memory object as a kernel argument.
+     *
+     * <p>This method allows setting raw cl_mem handles directly, useful when
+     * working with buffers created outside the GPUBuffer abstraction (e.g.,
+     * ByteBuffer uploads via clCreateBuffer).
+     *
+     * @param index Argument index
+     * @param clMem Raw OpenCL memory object handle (cl_mem)
+     * @throws IllegalStateException if kernel is closed or not compiled
+     */
+    public void setRawBufferArg(int index, long clMem) {
+        checkNotClosed();
+        checkCompiled();
+
+        try {
+            checkCLError(
+                    clSetKernelArg1p(kernel, index, clMem),
+                    "Failed to set raw buffer argument " + index
+            );
+        } catch (KernelCompilationException e) {
+            throw new RuntimeException(e);  // Convert to unchecked for setter
+        }
+    }
+
+    /**
+     * Set a float3 vector argument.
+     *
+     * <p>Passes a 3-component float vector to the kernel. Useful for
+     * scene bounds, positions, directions, etc.
+     *
+     * @param index Argument index
+     * @param x     X component
+     * @param y     Y component
+     * @param z     Z component
+     * @throws IllegalStateException if kernel is closed or not compiled
+     */
+    public void setFloat3Arg(int index, float x, float y, float z) {
+        checkNotClosed();
+        checkCompiled();
+
+        try (var stack = stackPush()) {
+            var buffer = stack.mallocFloat(3);
+            buffer.put(0, x);
+            buffer.put(1, y);
+            buffer.put(2, z);
+            try {
+                checkCLError(
+                        clSetKernelArg(kernel, index, buffer),
+                        "Failed to set float3 argument " + index
+                );
+            } catch (KernelCompilationException e) {
+                throw new RuntimeException(e);  // Convert to unchecked for setter
+            }
+        }
+    }
+
     @Override
     public void execute(int globalWorkSize) throws KernelExecutionException {
         execute(globalWorkSize, 1, 1);
