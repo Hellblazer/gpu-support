@@ -89,7 +89,8 @@ public class OpenCLKernel implements ComputeKernel {
     public void compile(String source, String entryPoint, String buildOptions) throws KernelCompilationException {
         checkNotClosed();
         if (compiled.get()) {
-            throw new KernelCompilationException("Kernel already compiled");
+            throw new KernelCompilationException(
+                    "Kernel already compiled. Use recompile() to recompile with different build options.");
         }
 
         compileInternal(source, entryPoint, buildOptions);
@@ -150,12 +151,8 @@ public class OpenCLKernel implements ComputeKernel {
             checkCLError(errcode.get(0), "Failed to create OpenCL kernel: " + entryPoint);
 
             compiled.set(true);
-            if (buildOptions != null && !buildOptions.isEmpty()) {
-                log.debug("Compiled OpenCL kernel: {} (entry point: {}, options: {})",
-                        name, entryPoint, buildOptions);
-            } else {
-                log.debug("Compiled OpenCL kernel: {} (entry point: {})", name, entryPoint);
-            }
+            log.debug("Compiled OpenCL kernel: {} (entry point: {}, options: {})",
+                    name, entryPoint, buildOptions != null ? buildOptions : "(none)");
 
         } catch (Exception e) {
             cleanup();

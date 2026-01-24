@@ -54,9 +54,14 @@ public interface ComputeKernel extends AutoCloseable {
      *   <li>Architecture-specific tuning: {@code "-D__GCN_REV__=2"}</li>
      * </ul>
      *
+     * <p><b>Security Note:</b> Build options are passed directly to the backend compiler without
+     * sanitization. Ensure options originate from trusted sources only to prevent compiler-based
+     * denial-of-service or unexpected behavior.
+     *
      * @param source       Kernel source code (Metal or OpenCL)
      * @param entryPoint   Kernel entry point function name
-     * @param buildOptions Compiler flags and preprocessor defines (null or empty for defaults)
+     * @param buildOptions Compiler flags and preprocessor defines (null or empty for defaults).
+     *                     Passed directly to the backend compiler without validation.
      * @throws KernelCompilationException if compilation fails
      * @see #recompile(String, String, String)
      */
@@ -69,8 +74,7 @@ public interface ComputeKernel extends AutoCloseable {
      * Recompile an already-compiled kernel with different build options.
      *
      * <p>Enables runtime GPU auto-tuning by recompiling kernels with different optimization
-     * parameters without clearing existing kernel state. Useful for performance experiments
-     * and adaptive optimization strategies.
+     * parameters. Useful for performance experiments and adaptive optimization strategies.
      *
      * <h3>Recompilation Workflow:</h3>
      * <pre>{@code
@@ -83,8 +87,13 @@ public interface ComputeKernel extends AutoCloseable {
      * kernel.execute(globalSize);  // Compare performance
      * }</pre>
      *
-     * <p><b>Note:</b> Recompilation creates a fresh kernel. The old kernel reference remains
-     * valid until explicitly closed, allowing multiple kernel variants to coexist.
+     * <p><b>Note:</b> Recompilation releases the old kernel and program resources, then compiles
+     * a fresh kernel. The kernel object itself remains valid and usable after recompilation.
+     *
+     * <p><b>Thread Safety:</b> During recompilation, {@link #isCompiled()} may briefly return false
+     * as resources are released and replaced. Concurrent kernel execution from other threads during
+     * recompilation will fail with IllegalStateException. Callers must ensure exclusive access to
+     * the kernel object during recompilation.
      *
      * @param source       Kernel source code (must match original source for consistency)
      * @param entryPoint   Kernel entry point function name
