@@ -101,6 +101,10 @@ class ComputeKernelBuildOptionsTest {
 
     // --- Basic Build Options Tests ---
 
+    /**
+     * Validates that preprocessor defines work with kernel compilation.
+     * Tests basic -D option passing to the OpenCL compiler.
+     */
     @Test
     void testCompileWithDefine() {
         if (!openCLAvailable) return;
@@ -152,6 +156,10 @@ class ComputeKernelBuildOptionsTest {
 
     // --- Compiler Flags Tests ---
 
+    /**
+     * Validates that OpenCL compiler flags (e.g., -cl-fast-relaxed-math) work correctly.
+     * These flags enable performance optimizations and are critical for GPU auto-tuning.
+     */
     @Test
     void testCompileWithCompilerFlags() {
         if (!openCLAvailable) return;
@@ -196,6 +204,11 @@ class ComputeKernelBuildOptionsTest {
         }
     }
 
+    /**
+     * Validates that recompilation changes the runtime behavior of the kernel.
+     * First execution multiplies by 2, second by 5, demonstrating that the
+     * new build options take effect. Critical for GPU auto-tuning workflows.
+     */
     @Test
     void testRecompileChangesDefineValue() throws Exception {
         if (!openCLAvailable) return;
