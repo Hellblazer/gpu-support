@@ -82,10 +82,35 @@ public class OpenCLKernel implements ComputeKernel {
 
     @Override
     public void compile(String source, String entryPoint) throws KernelCompilationException {
+        compile(source, entryPoint, null);
+    }
+
+    @Override
+    public void compile(String source, String entryPoint, String buildOptions) throws KernelCompilationException {
         checkNotClosed();
         if (compiled.get()) {
             throw new KernelCompilationException("Kernel already compiled");
         }
+
+        compileInternal(source, entryPoint, buildOptions);
+    }
+
+    @Override
+    public void recompile(String source, String entryPoint, String buildOptions) throws KernelCompilationException {
+        checkNotClosed();
+
+        // Clean up old kernel and program
+        cleanup();
+
+        // Compile fresh kernel with new build options
+        compileInternal(source, entryPoint, buildOptions);
+    }
+
+    /**
+     * Internal compilation method shared by compile() and recompile().
+     */
+    private void compileInternal(String source, String entryPoint, String buildOptions)
+            throws KernelCompilationException {
 
         try (var stack = stackPush()) {
             // Create program from source
@@ -93,10 +118,13 @@ public class OpenCLKernel implements ComputeKernel {
             program = clCreateProgramWithSource(context, source, errcode);
             checkCLError(errcode.get(0), "Failed to create OpenCL program");
 
-            // Build program for specific device
+            // Prepare build options (null and empty are treated as no options)
+            var options = (buildOptions != null && !buildOptions.isEmpty()) ? buildOptions : "";
+
+            // Build program for specific device with build options
             var devices = stack.mallocPointer(1);
             devices.put(0, device);
-            var buildStatus = clBuildProgram(program, devices, "", null, NULL);
+            var buildStatus = clBuildProgram(program, devices, options, null, NULL);
             if (buildStatus != CL_SUCCESS) {
                 // Get build log
                 var logSize = stack.mallocPointer(1);
@@ -122,7 +150,12 @@ public class OpenCLKernel implements ComputeKernel {
             checkCLError(errcode.get(0), "Failed to create OpenCL kernel: " + entryPoint);
 
             compiled.set(true);
-            log.debug("Compiled OpenCL kernel: {} (entry point: {})", name, entryPoint);
+            if (buildOptions != null && !buildOptions.isEmpty()) {
+                log.debug("Compiled OpenCL kernel: {} (entry point: {}, options: {})",
+                        name, entryPoint, buildOptions);
+            } else {
+                log.debug("Compiled OpenCL kernel: {} (entry point: {})", name, entryPoint);
+            }
 
         } catch (Exception e) {
             cleanup();

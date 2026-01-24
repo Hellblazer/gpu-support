@@ -33,6 +33,71 @@ public interface ComputeKernel extends AutoCloseable {
     void compile(String source, String entryPoint) throws KernelCompilationException;
 
     /**
+     * Compile the kernel from source code with build options for GPU auto-tuning.
+     *
+     * <p>Build options enable runtime kernel customization through preprocessor defines
+     * and compiler flags, essential for GPU auto-tuning and performance optimization.
+     *
+     * <h3>Build Options Examples:</h3>
+     * <ul>
+     *   <li><b>Preprocessor Defines:</b> {@code "-DBLOCK_SIZE=256 -DENABLE_SHARED_MEMORY=1"}</li>
+     *   <li><b>Compiler Flags:</b> {@code "-cl-fast-relaxed-math -cl-mad-enable"}</li>
+     *   <li><b>Warning Control:</b> {@code "-Werror"} (treat warnings as errors)</li>
+     *   <li><b>Vendor-Specific:</b> {@code "-D__CUDA_ARCH__=700"} (NVIDIA), {@code "-D__GCN__"} (AMD)</li>
+     * </ul>
+     *
+     * <h3>Use Cases:</h3>
+     * <ul>
+     *   <li>Runtime work group size tuning: {@code "-DWORK_GROUP_SIZE=256"}</li>
+     *   <li>Feature toggling: {@code "-DENABLE_FEATURE=1"}</li>
+     *   <li>Math optimizations: {@code "-cl-fast-relaxed-math"}</li>
+     *   <li>Architecture-specific tuning: {@code "-D__GCN_REV__=2"}</li>
+     * </ul>
+     *
+     * @param source       Kernel source code (Metal or OpenCL)
+     * @param entryPoint   Kernel entry point function name
+     * @param buildOptions Compiler flags and preprocessor defines (null or empty for defaults)
+     * @throws KernelCompilationException if compilation fails
+     * @see #recompile(String, String, String)
+     */
+    default void compile(String source, String entryPoint, String buildOptions)
+            throws KernelCompilationException {
+        throw new UnsupportedOperationException("Build options not supported by this compute backend");
+    }
+
+    /**
+     * Recompile an already-compiled kernel with different build options.
+     *
+     * <p>Enables runtime GPU auto-tuning by recompiling kernels with different optimization
+     * parameters without clearing existing kernel state. Useful for performance experiments
+     * and adaptive optimization strategies.
+     *
+     * <h3>Recompilation Workflow:</h3>
+     * <pre>{@code
+     * // Initial compilation
+     * kernel.compile(source, "myKernel", "-DBLOCK_SIZE=128");
+     * kernel.execute(globalSize);  // Test performance
+     *
+     * // Recompile with different block size
+     * kernel.recompile(source, "myKernel", "-DBLOCK_SIZE=256");
+     * kernel.execute(globalSize);  // Compare performance
+     * }</pre>
+     *
+     * <p><b>Note:</b> Recompilation creates a fresh kernel. The old kernel reference remains
+     * valid until explicitly closed, allowing multiple kernel variants to coexist.
+     *
+     * @param source       Kernel source code (must match original source for consistency)
+     * @param entryPoint   Kernel entry point function name
+     * @param buildOptions New compiler flags and preprocessor defines
+     * @throws KernelCompilationException if recompilation fails
+     * @see #compile(String, String, String)
+     */
+    default void recompile(String source, String entryPoint, String buildOptions)
+            throws KernelCompilationException {
+        throw new UnsupportedOperationException("Recompilation not supported by this compute backend");
+    }
+
+    /**
      * Set a buffer argument for the kernel.
      *
      * @param index  Argument index (0-based)
